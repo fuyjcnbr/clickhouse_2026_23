@@ -1,5 +1,16 @@
 
 
+## Подготавливаем дополнительные файлы
+
+В директории certs должен быть сертификат russian_trusted_root_ca_pem.crt
+
+В директории .secrets должны быть файлы:
+
+    tbank_token - с токеном т-банка
+
+    clickhouse_default_password - с паролем для пользователя default в clickhouse
+
+
 ## Собираем docker с clickhous'ом
 
 ```commandline
@@ -13,15 +24,6 @@ docker build --no-cache --squash -t test-clickhouse -f clickhouse/Dockerfile .
 docker build --no-cache --squash -t test-airflow -f airflow/Dockerfile .
 ```
 
-## Подготавливаем дополнительные файлы
-
-В директории certs должен быть сертификат russian_trusted_root_ca_pem.crt
-
-В директории .secrets должны быть файлы:
-
-    tbank_token - с токеном т-банка
-
-    clickhouse_default_password - с паролем для пользователя default в clickhouse
 
 ## Запускаем docker compose
 
