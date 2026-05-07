@@ -1,0 +1,56 @@
+version: "3.9"
+
+secrets:
+  tbank_token:
+    file: ./.secrets/tbank_token
+  clickhouse_default_password:
+    file: ./.secrets/clickhouse_default_password
+
+services:
+  test-airflow:
+    image: test-airflow
+    container_name: test-airflow
+    hostname: test-airflow-host
+    command: "/start.sh"
+    ports:
+      - "7080:8080"
+    secrets:
+      - source: tbank_token
+        target: tbank_token
+        mode: 0400
+      - source: clickhouse_default_password
+        target: clickhouse_default_password
+        mode: 0400
+    environment:
+      TBANK_TOKEN_PATH: /run/secrets/tbank_token
+      CLICKHOUSE_DEFAULT_PASSWORD: /run/secrets/clickhouse_default_password
+    volumes:
+      - ./airflow/dags:/airflow/dags
+    networks:
+      - test-net
+
+  test-clickhouse:
+    image: test-clickhouse
+    container_name: test-clickhouse
+    hostname: test-clickhouse-host
+    command: /bin/sh -c "/entrypoint.sh & sleep 5 && /start.sh & wait"
+    ports:
+      - "18123:8123"
+      - "19000:9000"
+    secrets:
+      - source: clickhouse_default_password
+        target: clickhouse_default_password
+        mode: 0400
+    environment:
+      CLICKHOUSE_DEFAULT_PASSWORD: /run/secrets/clickhouse_default_password
+    networks:
+      - test-net
+
+networks:
+  test-net:
+    name: test-net
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.76.0.0/24

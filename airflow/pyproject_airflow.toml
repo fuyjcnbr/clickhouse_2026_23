@@ -1,0 +1,20 @@
+[project]
+name = "airflow-suit"
+version = "0.1.0"
+description = "airflow-suit"
+readme = "readme.md"
+requires-python = ">=3.12"
+
+dependencies = [
+    "pendulum",
+    "apache-airflow[async]==2.11.0",
+    "clickhouse-connect",
+
+    "t-tech-investments",
+]
+
+[tool.uv.sources]
+t-tech-investments = { path = "/invest-python", editable = false }
+
+[tool.pylint.main]
+ignore-paths = ".venv"
